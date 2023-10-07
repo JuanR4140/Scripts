@@ -1,0 +1,172 @@
+Always read README FIRST!
+
+UPDATE AND SECURITY
+-------------------
+Install updates from:
+    - Important security updates
+    - Recommended updates
+
+    Automatically check for updates DAILY
+    When there are security updates: DOWNLOAD AND INSTALL AUTOMATICALLY
+
+Complete Forensic questions!
+
+FIREWALL
+--------
+Status: ON
+Incoming: REJECT
+Outgoing: ALLOW
+
+MALWARE
+--------
+sudo apt install clamav / clamscan
+clamscan
+    - Use clamscan to check for malware in system
+
+USERS
+-----
+Check users in system against users in README
+
+if a user in the system is not root (and it should be)
+    make it root
+
+if a user in the system is root (and it should not be)
+    remove root
+
+if a user in the system has a weak password
+    strengthen the password
+
+if a user in the system has no password at all
+    add strong password
+
+if a user in the system isn't a root or user in README
+    remove the user
+
+GROUPS
+------
+cat /etc/group
+    - lists all groups
+addgroup [groupname]
+    - adds group
+adduser [user] [group]
+    - adds user to group
+
+PROGRAM UPDATES
+---------------
+Update programs such as:
+    Firefox
+        - Enable security/privacy settings
+        - DELETE cookies and site dada when Firefox is closed
+        - DON'T ask to save logins
+        - DO Show alerts about password for breached websites
+        - BLOCK pop up windows
+        - WARN you when websites try to install add-ons
+        - BLOCK dangerous and deceptive content
+        - BLOCK dangerous downloads
+
+    Thunderbird
+
+PAM FILES
+---------
+sudo apt install libpam-cracklib
+    - Allows to put better password policies
+
+sudo nano /etc/pam.d/common-password
+    - Enforce password history of 5
+        - Add "remember=5" to the end of the line that has "pam_unix.so" in it.
+
+    - Enforce password length of 8:
+        - Add "minlen=8" to the end of the line that has "pam_unix.so" in it
+
+    - Enforce password complexity with one of each type of character:*
+        - Add "ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1" to the end of the
+        line with "pam_cracklib.so" in it.*
+
+            *ucredit = upper case, lcredit = lower case, dcredit = number and ocredit = symbol
+            ** cracklib may need to be installed before enforcing password complexity (see start of PAM FILES)
+    - Save and close
+
+gedit /etc/login.defs (or sudo nano)
+    - Use CTRL + F to find section "PASS_MAX_AGE"
+        - PASS_MAX_AGE should be 90
+        - PASS_MIN_DAYS should be 10
+        - PASS_WARN_AGE should be 7
+    - Save and close
+
+gedit /etc/pam.d/common-auth (or sudo nano)
+    - Add "auth required pam_tally2.so deny=5 onerr=fail unlock_time=1800" to end of file
+        - deny=5 -> Sets the number of allowed failed login attempts
+        - unlock_time=1800 -> Sets the account lockout duration in seconds (1800 seconds -> 30 minutes)
+    - Save and close
+
+MEDIA FILES AND HIDDEN FILES
+----------------------------
+
+ls -la
+    - Shows hidden folders
+
+NOTE: CYBERPATRIOT USES HIDDEN FOLDERS TO HIDE MEDIA FILES
+
+locate *.mp3 (or other extension)
+    - Locates all files with extension
+    - USE AT ROOT DIRECTORY TO RECURSIVELY SEARCH
+
+SUSPICIOUS FILES
+----------------
+Look for installed programs
+    REMOVE PROGRAMS LIKE
+        - nmap
+        - metasploit
+        - armitage
+        - aircrack-ng
+        - bird sweep (suite)
+        - offe crack
+        - wireshark
+
+PASSWORD AND SHADOW PERMISSIONS
+--------------------------------
+check pass.wd file and shadow file isn't allowed by guest user or standard users
+
+Get rid of guest account
+    The guest account is controlled by LightDM
+    edit the LightDM file
+    sudo gedit /etc/lightdm/lightdm.conf (or sudo nano)
+        NOTE: THE FILE MAY HAVE CHANGED FROM /etc/lightdm/lightdm.conf TO /etc/lightdm/users.conf
+        - add the line "allow-guest=false" to the end of the Light DM file
+        - Save and close
+        - Restart system and confirm guest account is disabled (click username button on top-right corner)
+
+chmod [u,g or o][+ or -][r,w or x] [filepath]
+    - Change permissions for user, group, or others
+    - + or - to indicate adding or removing permissions
+    - r for read, w for write, x for execute
+    - filepath for filepath
+
+SYSTEM LOGS
+-----------
+auth.log
+    - Tracks authentification events (like password entering)
+dpkg.log
+    - Tracks software events (installation and updates)
+syslog
+    - Tracks operating system events (error messages)
+Xorg.0.log
+    - Tracks desktop events (service changes and graphics card errors)
+
+- Can add different types of logs
+
+Must set up auditing in Linux
+    - apt-get install auditd
+    - auditctl -e 1
+    - view and modify policies with:
+        - gedit /etc/audit/auditd.conf (or sudo nano)
+
+USEFUL PROGRAMS
+---------------
+sudo apt install bum
+
+NOTE: BUM IS NOT AVAILABLE ON UBUNTU ZESTY OR LATER (EVEN JELLYFISH), LOOK FOR ALTERNATIVE.
+
+bum (Boot Up Manager)
+    - Info on boot up programs
+    - Remove/Disable suspicious services
