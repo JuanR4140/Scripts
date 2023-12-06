@@ -17,6 +17,7 @@ echo -e "\n
 # Will add ability to load user files
 # EX: To cross check should-be admins with shouldn't be.
 echo "  [1] List all users"
+echo "  [2] Cross check users with file"
 
 read -p "> " choice
 
@@ -58,5 +59,25 @@ then
 
         done
     done <<< "$users"
+
+elif [ $choice = "2"  ]
+then
+    read -p "Enter list of users file > " users_file
+    read -p "Enter list of admin file > " admin_file
+
+    if [ ! -f $users_file ]; then
+        echo -e "Could not find $users_file\n"
+        exit
+    fi
+    if [ ! -f $admin_file ]; then
+        echo -e "Could not find $admin_file\n"
+        exit
+    fi
+
+    echo " ... "
+
+else
+    echo -e "Invalid option.\n"
+
 fi
 
