@@ -90,6 +90,28 @@ then
                     if [[ $(groups $line) == *"$sudo_group"* ]] then
                         ((root_rights_amnt++))
                         echo -e "$line found, but has ADMIN PERMISSIONS\n"
+                        echo -n "Would you like to remove them? (y/n) > "
+                        read should_remove_admin </dev/tty
+                        if [ $should_remove_admin = "y" ]; then
+                            echo -e "Removing $line..\n"
+                            gpasswd -d $line $sudo_group
+                            echo -e "Removed $line from $sudo_group!\n\n"
+                        else
+                            echo -e "Skipping operation on $line.\n\n"
+                        fi
+                    fi
+
+                    output=$(cat /etc/shadow | grep $line)
+                    if [ ${#output} -lt 50 ]; then
+                        echo -n "User $line does not seem to have a password set. Set one? (y/n) > "
+                        read should_set_password </dev/tty
+                        if [ $should_set_password = "y" ]; then
+                            echo -e "Setting password for $line.."
+                            read -p "Enter new password: " password </dev/tty
+                            echo "$line:$password" | chpasswd -c SHA512 -s 10000
+                            # passwd $line
+                            echo -e "Changed password for $line."
+                        fi
                     fi
                 fi
             done
@@ -127,6 +149,29 @@ then
 
                     if [[ $(groups $line) != *"$sudo_group"* ]]; then
                         echo -e "$line found, but has STANDARD PERMISSIONS\n"
+                        echo -n "Would you like to add them? (y/n) > "
+                        read should_add_admin </dev/tty
+                        if [ $should_add_admin = "y"  ]; then
+                            echo -e "Adding $line..\n"
+                            usermod -aG $sudo_group $line
+                            echo -e "Added $line to $sudo_group!\n\n"
+                        else
+                            echo -e "Skipping operation on $line.\n\n"
+                        fi
+                    fi
+
+                    output=$(cat /etc/shadow | grep $line)
+                    if [ ${#output} -lt 50 ]; then
+                        echo -n "ADMIN $line does not seem to have a password set. Set one? (y/n) > "
+                        read should_set_password </dev/tty
+                        if [ $should_set_password = "y" ]; then
+                            echo -e "Setting password for $line.."
+                            read -p "Enter new password: " password </dev/tty
+                            echo "$line:$password" | chpasswd -c SHA512 -s 10000
+                            # passwd $line
+                            echo -e "Changed password for $line."
+
+                        fi
                     fi
                 fi
             done
@@ -167,6 +212,19 @@ then
             if $not_found; then
                 ((not_found_amnt++))
                 echo -e "$user NOT PRESENT WITHIN ANY GIVEN FILE.\n"
+                echo -n "WOULD YOU LIKE TO REMOVE THEM? (y/n) > "
+                read conf_1 </dev/tty
+                if [ $conf_1 = "y" ]; then
+                    echo -e "ARE YOU SURE? THIS WILL DELETE ALL OF $user'S INFORMATION."
+                    echo -n "PLEASE DOUBLE CHECK THIS IS WHAT YOU WANT TO DO, THEN TYPE 'yes' > "
+                    read conf_2 </dev/tty
+                    if [ $conf_2 = "yes" ]; then
+                        echo "REMOVING $user FROM THE SYSTEM.."
+                        userdel -r $user
+                        killall -u $user
+                        echo "REMOVED $user FROM SYSTEM.\n\n"
+                    fi
+                fi
             fi
 
         done
