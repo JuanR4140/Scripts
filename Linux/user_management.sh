@@ -89,11 +89,11 @@ then
 
                     if [[ $(groups $line) == *"$sudo_group"* ]] then
                         ((root_rights_amnt++))
-                        echo -e "$line found, but has ADMIN PERMISSIONS\n"
+                        echo -e "$line found, but has ADMIN PERMISSIONS"
                         echo -n "Would you like to remove them? (y/n) > "
                         read should_remove_admin </dev/tty
                         if [ $should_remove_admin = "y" ]; then
-                            echo -e "Removing $line..\n"
+                            echo -e "Removing $line.."
                             gpasswd -d $line $sudo_group
                             echo -e "Removed $line from $sudo_group!\n\n"
                         else
@@ -158,11 +158,12 @@ then
                     not_found=false
 
                     if [[ $(groups $line) != *"$sudo_group"* ]]; then
-                        echo -e "$line found, but has STANDARD PERMISSIONS\n"
+                        ((root_rights_amnt++))
+                        echo -e "$line found, but has STANDARD PERMISSIONS"
                         echo -n "Would you like to add them? (y/n) > "
                         read should_add_admin </dev/tty
                         if [ $should_add_admin = "y"  ]; then
-                            echo -e "Adding $line..\n"
+                            echo -e "Adding $line.."
                             usermod -aG $sudo_group $line
                             echo -e "Added $line to $sudo_group!\n\n"
                         else
