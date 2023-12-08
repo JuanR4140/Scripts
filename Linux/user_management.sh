@@ -125,10 +125,20 @@ then
     done < "$users_file"
 
     echo -e "$users_file RESULTS\n----------------------\n"
-    echo -e "$not_found_amnt users not found in provided user list."
-    echo -e "Double check the results are correct, then delete the user with deluser.\n"
-    echo -e "$root_rights_amnt users found in provided user list, but are ADMINS."
-    echo -e "Double check the results are correct, then remove the user from $sudo_group with gpasswd.\n"
+
+    if [ $not_found_amnt -gt 0  ]; then
+        echo -e "$not_found_amnt users not found in provided user list."
+        echo -e "Double check the results are correct, then delete the user with deluser.\n"
+    else
+        echo -e "All users found are Ok.\n"
+    fi
+
+    if [ $root_rights_amnt -gt 0  ]; then
+        echo -e "$root_rights_amnt users found in provided user list, but are ADMINS."
+        echo -e "Double check the results are correct, then remove the user from $sudo_group with gpasswd.\n"
+    else
+        echo -e "All user permissions are Ok.\n"
+    fi
 
     echo -e "[Press ENTER to continue]"
     read trash
@@ -185,11 +195,19 @@ then
     done < "$admin_file"
 
     echo -e "$admin_file RESULTS\n----------------------\n"
-    echo -e "$not_found_amnt users not found in provided admin list."
-    echo -e "Double check the results are correct, then delete the user with deluser.\n"
-    echo -e "$root_rights_amnt users found in provided admin list, but have STANDARD permission."
-    echo -e "Double check the results are correct, then add the user to $sudo_group with gpasswd.\n\n\n"
+    if [ $not_found_amnt -gt 0 ]; then
+        echo -e "$not_found_amnt users not found in provided admin list."
+        echo -e "Double check the results are correct, then delete the user with deluser.\n"
+    else
+        echo -e "All admin users found are Ok.\n"
+    fi
 
+    if [ $root_rights_amnt -gt 0 ]; then
+        echo -e "$root_rights_amnt users found in provided admin list, but have STANDARD permission."
+        echo -e "Double check the results are correct, then add the user to $sudo_group with gpasswd.\n\n\n"
+    else
+        echo -e "All admin permissions are Ok.\n"
+    fi
 
     not_found_amnt=0
     while IFS=' ' read -ra ADDR; do
@@ -230,7 +248,11 @@ then
         done
     done <<< $(ls /home)
 
-    echo -e "\n$not_found_amnt USERS NOT FOUND WITHIN ANY GIVEN FILE.\n"
+    if [ $not_found_amnt -gt 0 ]; then
+        echo -e "\n$not_found_amnt USERS NOT FOUND WITHIN ANY GIVEN FILE.\n"
+    else
+        echo -e "\nEveryone is Ok.\n"
+    fi
 
     exit
 
