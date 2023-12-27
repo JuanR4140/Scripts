@@ -19,9 +19,25 @@ Outgoing: ALLOW
 
 MALWARE
 --------
+
 sudo apt install clamav / clamscan
 clamscan
     - Use clamscan to check for malware in system
+
+
+PORTS
+-----
+
+If you know a specific port in which a malicious process listens on,
+`fuser [port]/tcp`
+can be used to find which PID it has.
+
+This can be useful to find further information on where the malware resides.
+
+Additionally,
+`netstat -tulnap`
+shows all ports being used on the system, as well as the names of the programs
+that are using them. (CAn be used with fuser)
 
 USERS
 -----
