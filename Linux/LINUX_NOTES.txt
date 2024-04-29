@@ -177,6 +177,11 @@ Must set up auditing in Linux
     - view and modify policies with:
         - gedit /etc/audit/auditd.conf (or sudo nano)
 
+Install Lynis!
+Performs extensive health scan on the system to help
+harden security. Watch for helpful related logs.
+(Utilize risk categorization)
+
 USEFUL PROGRAMS
 ---------------
 sudo apt install bum
