@@ -14,8 +14,6 @@ echo -e "\n
        |USER MANAGEMENT SCRIPT|
        |----------------------|\n\n"
 
-# Will add ability to load user files
-# EX: To cross check should-be admins with shouldn't be.
 echo "  [1] List all users"
 echo "  [2] Cross check users with file"
 
